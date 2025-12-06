@@ -55,21 +55,49 @@ class ReportingAgent(BaseAgent):
         print(f" Return:           {portfolio.get('return_pct', 0):.2f}%")
         print(f" Total Trades:     {portfolio.get('trade_count', 0)}")
         
-        # Daily Summary (New)
+        # Daily Summary (Current Session)
         last_session = portfolio.get('last_session')
-        if last_session:
-            print("\n" + "-" * 70)
-            print(" LATEST SESSION RESULT")
-            print("-" * 70)
-            print(f" Date:             {last_session.get('date')}")
-            print(f" Action:           {last_session.get('action')}")
-            print(f" Reason:           {last_session.get('reason')}")
-            print(f" Trades Executed:  {last_session.get('trades_count')}")
+        
+        # Check if the last session was actually TODAY
+        is_today = False
+        if last_session and 'date' in last_session:
+            try:
+                session_date = last_session['date'].split(' ')[0]
+                today_date = pd.Timestamp.now().strftime('%Y-%m-%d')
+                if session_date == today_date:
+                    is_today = True
+            except:
+                pass
 
-        # Last Trade
+        if is_today and last_session:
+            print("\n" + "=" * 70)
+            print(" TODAY'S SESSION RESULT")
+            print("=" * 70)
+            
+            action = last_session.get('action', 'UNKNOWN')
+            reason = last_session.get('reason', 'No reason provided')
+            trades_count = last_session.get('trades_count', 0)
+            
+            if trades_count > 0:
+                print(f" Status:           ACTIVE TRADING")
+                print(f" Trades Executed:  {trades_count}")
+                print(f" Summary:          {reason}")
+            else:
+                print(f" Status:           NO TRADES")
+                print(f" Reason:           {reason}")
+                
+        else:
+            # If no session recorded for today yet
+            print("\n" + "=" * 70)
+            print(" TODAY'S SESSION RESULT")
+            print("=" * 70)
+            print(" Status:           PENDING / NO DATA")
+            print(" Info:             No trading session recorded for today yet.")
+
+        # Last Trade (Single line info)
         last_trade = portfolio.get('last_trade')
         if last_trade:
-            print(f" Last Trade:       {last_trade['action']} {last_trade['quantity']} {last_trade['ticker']} @ EUR {last_trade['price']:.2f}")
+             print(f"\n Last Market Action: {last_trade['action']} {last_trade['quantity']} {last_trade['ticker']} @ EUR {last_trade['price']:.2f} ({last_trade['timestamp']})")
         
         # Portfolio Composition
         print("\n" + "-" * 70)
@@ -159,7 +187,8 @@ class ReportingAgent(BaseAgent):
             print(f" Total Trades: {total_trades}")
             print(f" Buys: {buys} | Sells: {sells}")
             print("-" * 70)
-            print(" Recent Activity:")
+            print(" TRANSACTION HISTORY (Last 5)")
+            print("-" * 70)
             print(df.tail(5)[['Date', 'Ticker', 'Action', 'Price', 'Reason']].to_string(index=False))
             print("="*70)
             

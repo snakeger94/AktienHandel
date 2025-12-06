@@ -4,7 +4,7 @@ Universe Manager - Manages the expanded trading universe of stocks and cryptocur
 
 # Top S&P 500 stocks (representative sample of 100 most liquid)
 SP500_STOCKS = [
-    'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B', 'UNH', 'JNJ',
+    'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK-B', 'UNH', 'JNJ',
     'XOM', 'JPM', 'V', 'PG', 'MA', 'HD', 'CVX', 'LLY', 'ABBV', 'MRK',
     'AVGO', 'PEP', 'KO', 'COST', 'WMT', 'TMO', 'MCD', 'CSCO', 'ACN', 'ABT',
     'DHR', 'VZ', 'NEE', 'ADBE', 'CRM', 'NKE', 'TXN', 'PM', 'LIN', 'CMCSA',

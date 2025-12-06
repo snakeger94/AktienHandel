@@ -98,6 +98,7 @@ class MarketScanner(BaseAgent):
             list: Candidates with technical data
         """
         candidates = []
+        stats = {'total': 0, 'insufficient_data': 0, 'low_momentum': 0, 'accepted': 0, 'fetch_failed': 0}
         
         # For large universes, batch fetch data
         if len(tickers) > 20:
@@ -105,23 +106,45 @@ class MarketScanner(BaseAgent):
             self.log(f"Batch fetching data for {len(tickers)} tickers...")
             data_dict = fetch_batch_data(tickers, period="6mo", max_workers=10)
             
-            for ticker, df in data_dict.items():
-                candidate = self._analyze_ticker(ticker, df)
+            stats['total'] = len(tickers)
+            stats['fetch_failed'] = len(tickers) - len(data_dict)
+            
+            for ticker in tickers:
+                if ticker not in data_dict:
+                    continue
+                    
+                df = data_dict[ticker]
+                candidate, reason = self._analyze_ticker(ticker, df)
                 if candidate:
                     candidates.append(candidate)
+                    stats['accepted'] += 1
+                else:
+                    if reason == 'insufficient_data':
+                        stats['insufficient_data'] += 1
+                    else:
+                        stats['low_momentum'] += 1
         else:
             # Sequential processing for small lists
+            stats['total'] = len(tickers)
             for ticker in tickers:
                 self.log(f"Checking {ticker}...")
                 df = fetch_data(ticker, period="6mo")
                 
                 if df is None or df.empty:
+                    stats['fetch_failed'] += 1
                     continue
                 
-                candidate = self._analyze_ticker(ticker, df)
+                candidate, reason = self._analyze_ticker(ticker, df)
                 if candidate:
                     candidates.append(candidate)
+                    stats['accepted'] += 1
+                else:
+                    if reason == 'insufficient_data':
+                        stats['insufficient_data'] += 1
+                    else:
+                        stats['low_momentum'] += 1
         
+        self.log(f"Screening Stats: Checked {stats['total']} | Failed Fetch: {stats['fetch_failed']} | No Data: {stats['insufficient_data']} | Criteria Fail: {stats['low_momentum']} | Passed: {stats['accepted']}")
         return candidates
     
     def _analyze_ticker(self, ticker, df):
@@ -136,21 +159,27 @@ class MarketScanner(BaseAgent):
             dict: Candidate dict or None
         """
         try:
-            # Ensure we have enough data
-            if len(df) < 50:
-                return None
+            # Ensure we have enough data (check for NON-NaN data)
+            valid_closes = df['Close'].dropna()
+            if len(valid_closes) < 50:
+                return None, 'insufficient_data'
 
-            current_price = df['Close'].iloc[-1]
-            sma50 = df['Close'].rolling(window=50).mean().iloc[-1]
-            sma20 = df['Close'].rolling(window=20).mean().iloc[-1]
+            current_price = valid_closes.iloc[-1]
+            
+            # Simple technical checks
+            sma50 = valid_closes.rolling(window=50).mean().iloc[-1]
+            sma20 = valid_closes.rolling(window=20).mean().iloc[-1]
             
             # Calculate momentum (20-day return)
-            momentum = (current_price - df['Close'].iloc[-20]) / df['Close'].iloc[-20]
+            momentum = (current_price - valid_closes.iloc[-20]) / valid_closes.iloc[-20]
             
-            # Calculate volume trend
-            avg_volume = df['Volume'].rolling(window=20).mean().iloc[-1]
-            recent_volume = df['Volume'].iloc[-5:].mean()
-            volume_ratio = recent_volume / avg_volume if avg_volume > 0 else 1
+            # Calculate volume trend (fill info if volume missing)
+            if 'Volume' in df.columns:
+                avg_volume = df['Volume'].rolling(window=20).mean().iloc[-1]
+                recent_volume = df['Volume'].iloc[-5:].mean()
+                volume_ratio = recent_volume / avg_volume if avg_volume > 0 else 1
+            else:
+                volume_ratio = 1.0
             
             # Determine asset type
             asset_type = self.universe_mgr.get_asset_type(ticker)
@@ -169,7 +198,7 @@ class MarketScanner(BaseAgent):
                         'momentum': float(momentum),
                         'volume_ratio': float(volume_ratio),
                         'score': float(momentum * 2 + volume_ratio)  # Prioritize momentum for crypto
-                    }
+                    }, None
             else:
                 # Stocks: Traditional trend following
                 # Price > SMA50 or strong recent momentum
@@ -184,9 +213,13 @@ class MarketScanner(BaseAgent):
                         'momentum': float(momentum),
                         'volume_ratio': float(volume_ratio),
                         'score': float((current_price / sma50 - 1) + momentum)
-                    }
+                    }, None
             
-            return None
+            return None, 'criteria_fail'
+            
+        except Exception as e:
+            self.log(f"Error analyzing {ticker}: {e}")
+            return None, 'error'
             
         except Exception as e:
             self.log(f"Error analyzing {ticker}: {e}")

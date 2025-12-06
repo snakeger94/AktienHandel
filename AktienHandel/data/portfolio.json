@@ -71,9 +71,9 @@
     },
     "trade_count": 5,
     "last_session": {
-        "date": "2025-12-06 11:50:28",
-        "action": "NO_TRADES",
-        "reason": "Scanner found no candidates.",
+        "date": "2025-12-06 11:55:42",
+        "action": "HOLD",
+        "reason": "AI analysis",
         "trades_count": 0
     }
 }
