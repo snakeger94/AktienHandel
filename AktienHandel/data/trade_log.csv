@@ -1,0 +1,11 @@
+Date,Ticker,Action,Quantity,Price,Total,Reason
+2025-12-05 17:02:54,AAPL,BUY,1,280.07000732421875,280.07000732421875,Uptrend (fallback logic)
+2025-12-05 17:02:57,GOOGL,BUY,1,319.6300048828125,319.6300048828125,Uptrend (fallback logic)
+2025-12-05 17:03:00,AMZN,BUY,2,230.27000427246094,460.5400085449219,Uptrend (fallback logic)
+2025-12-05 17:03:04,TSLA,BUY,1,455.57000732421875,455.57000732421875,Uptrend (fallback logic)
+2025-12-05 17:03:07,INTC,BUY,11,41.85499954223633,460.4049949645996,Uptrend (fallback logic)
+2025-12-05 17:59:00,AZN,BUY,5,90.29000091552734,451.4500045776367,"AZN’s current price below key moving averages, combined with being named a top stock by BofA, suggests a favorable long-term outlook."
+2025-12-05 17:59:38,CVX,BUY,3,151.2624969482422,453.78749084472656,"CVX is currently above both its 50-day and 200-day moving averages, coupled with positive sentiment surrounding Chevron and broader market strength, suggesting a favorable outlook."
+2025-12-05 18:00:54,CSGP,BUY,4,124.0999984741211,496.3999938964844,"Despite negative sentiment surrounding the Dow, recent strong results and the stock’s proximity to its 200-day moving average suggest potential for outperformance against the MSCI World index."
+2025-12-05 18:01:29,DLTR,BUY,4,124.33000183105469,497.32000732421875,"DLTR’s current price is above both its 50-day and 200-day moving averages, combined with the positive earnings sentiment, suggests a favorable outlook for outperforming the MSCI World index."
+2025-12-05 18:01:46,CSCO,BUY,6,77.5999984741211,465.59999084472656,"The stock is above both key moving averages, exhibits strong 1-year returns, and recent partnership news provides a positive catalyst for growth."

@@ -1,0 +1,79 @@
+{
+    "cash": 5659.227489471436,
+    "holdings": {
+        "AAPL": 1,
+        "GOOGL": 1,
+        "AMZN": 2,
+        "TSLA": 1,
+        "INTC": 11,
+        "AZN": 5,
+        "CVX": 3,
+        "CSGP": 4,
+        "DLTR": 4,
+        "CSCO": 6
+    },
+    "total_value": 9759.367500305176,
+    "profit_loss": -240.63249969482422,
+    "return_pct": -2.4063249969482423,
+    "recent_trades": [
+        {
+            "Date": "2025-12-05 17:59:00",
+            "Ticker": "AZN",
+            "Action": "BUY",
+            "Quantity": "5",
+            "Price": "90.29000091552734",
+            "Total": "451.4500045776367",
+            "Reason": "AZN\ufffds current price below key moving averages, combined with being named a top stock by BofA, suggests a favorable long-term outlook."
+        },
+        {
+            "Date": "2025-12-05 17:59:38",
+            "Ticker": "CVX",
+            "Action": "BUY",
+            "Quantity": "3",
+            "Price": "151.2624969482422",
+            "Total": "453.78749084472656",
+            "Reason": "CVX is currently above both its 50-day and 200-day moving averages, coupled with positive sentiment surrounding Chevron and broader market strength, suggesting a favorable outlook."
+        },
+        {
+            "Date": "2025-12-05 18:00:54",
+            "Ticker": "CSGP",
+            "Action": "BUY",
+            "Quantity": "4",
+            "Price": "124.0999984741211",
+            "Total": "496.3999938964844",
+            "Reason": "Despite negative sentiment surrounding the Dow, recent strong results and the stock\ufffds proximity to its 200-day moving average suggest potential for outperformance against the MSCI World index."
+        },
+        {
+            "Date": "2025-12-05 18:01:29",
+            "Ticker": "DLTR",
+            "Action": "BUY",
+            "Quantity": "4",
+            "Price": "124.33000183105469",
+            "Total": "497.32000732421875",
+            "Reason": "DLTR\ufffds current price is above both its 50-day and 200-day moving averages, combined with the positive earnings sentiment, suggests a favorable outlook for outperforming the MSCI World index."
+        },
+        {
+            "Date": "2025-12-05 18:01:46",
+            "Ticker": "CSCO",
+            "Action": "BUY",
+            "Quantity": "6",
+            "Price": "77.5999984741211",
+            "Total": "465.59999084472656",
+            "Reason": "The stock is above both key moving averages, exhibits strong 1-year returns, and recent partnership news provides a positive catalyst for growth."
+        }
+    ],
+    "last_trade": {
+        "ticker": "CSCO",
+        "action": "BUY",
+        "quantity": 6,
+        "price": 77.5999984741211,
+        "timestamp": "2025-12-05 18:01:46"
+    },
+    "trade_count": 5,
+    "last_session": {
+        "date": "2025-12-06 11:50:28",
+        "action": "NO_TRADES",
+        "reason": "Scanner found no candidates.",
+        "trades_count": 0
+    }
+}

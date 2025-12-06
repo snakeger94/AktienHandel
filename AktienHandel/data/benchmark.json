@@ -1,0 +1,96 @@
+{
+    "ticker": "URTH",
+    "start_date": "2025-12-05",
+    "start_price": 186.5800018310547,
+    "initial_investment": 10000.0,
+    "history": [
+        {
+            "date": "2025-12-05 17:36:18",
+            "portfolio_value": 9998.381973266602,
+            "portfolio_return": -0.016180267333984373,
+            "benchmark_value": 9995.52491730461,
+            "benchmark_return": -0.04475082695390068,
+            "alpha": 0.028570559619916308
+        },
+        {
+            "date": "2025-12-05 17:43:35",
+            "portfolio_value": 10001.889877319336,
+            "portfolio_return": 0.018898773193359374,
+            "benchmark_value": 9993.032217733054,
+            "benchmark_return": -0.06967782266945062,
+            "alpha": 0.08857659586281
+        },
+        {
+            "date": "2025-12-05 18:01:32",
+            "portfolio_value": 9777.502521514893,
+            "portfolio_return": -2.224974784851074,
+            "benchmark_value": 10004.287803101595,
+            "benchmark_return": 0.04287803101595418,
+            "alpha": -2.267852815867028
+        },
+        {
+            "date": "2025-12-06 11:03:44",
+            "portfolio_value": 0,
+            "portfolio_return": 0,
+            "benchmark_value": 30836.103612885065,
+            "benchmark_return": 208.36103612885063,
+            "alpha": -208.36103612885063
+        },
+        {
+            "date": "2025-12-06 11:12:06",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:14:16",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:15:19",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:16:56",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:43:13",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:43:59",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 11:50:32",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
+        }
+    ]
+}

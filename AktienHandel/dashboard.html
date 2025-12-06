@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Dashboard - AntiGravity Trading</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: hsl(220, 90%, 56%);
+            --primary-dark: hsl(220, 90%, 46%);
+            --success: hsl(142, 71%, 45%);
+            --danger: hsl(0, 84%, 60%);
+            --warning: hsl(40, 96%, 50%);
+            --bg-dark: hsl(220, 18%, 10%);
+            --bg-card: hsl(220, 18%, 14%);
+            --bg-card-hover: hsl(220, 18%, 16%);
+            --border: hsl(220, 18%, 22%);
+            --text-primary: hsl(0, 0%, 95%);
+            --text-secondary: hsl(0, 0%, 70%);
+            --text-muted: hsl(0, 0%, 50%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), hsl(280, 90%, 60%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), hsl(280, 90%, 60%));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .chart-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        #portfolioChart {
+            max-height: 400px;
+        }
+
+        .holdings-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .holdings-container:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .holdings-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .holdings-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .holding-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .holding-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .holding-ticker {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--primary);
+        }
+
+        .holding-quantity,
+        .holding-value,
+        .holding-allocation {
+            text-align: right;
+        }
+
+        .holding-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .holding-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .holding-quantity,
+            .holding-value,
+            .holding-allocation {
+                text-align: left;
+            }
+        }
+
+        .terminal-container {
+            background: #1e1e1e;
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            display: none;
+            /* Hidden by default */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-title {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .terminal-content {
+            color: #d4d4d4;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.4;
+            background: #111;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, #fbbf24, #b45309);
+        }
+
+        .ai-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+            background: #4b5563;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Portfolio Dashboard</h1>
+            <div style="display: flex; gap: 1rem;">
+                <button id="aiBtn" class="ai-btn" onclick="runTradingSession()">
+                    <span>🤖</span>
+                    <span>AI Trading Starten</span>
+                </button>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button id="aiBtn" class="ai-btn" onclick="runTradingSession()">
+                        <span>🤖</span>
+                        <span>AI Starten</span>
+                    </button>
+                    <button class="refresh-btn" onclick="loadData()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+        </header>
+
+        <div id="error-container"></div>
+
+        <div id="session-status"
+            style="display:none; margin-bottom: 2rem; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border); background: var(--bg-card);">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary); font-size: 1.1rem;">Latest
+                Session Result</div>
+            <div id="session-details" style="color: var(--text-secondary);"></div>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <div>Lade Portfolio-Daten...</div>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Gesamtwert Portfolio</div>
+                    <div class="stat-value" id="totalValue">€0.00</div>
+                    <div class="stat-change">
+                        <span id="totalChange">-</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Verfügbares Geld</div>
+                    <div class="stat-value" id="cashValue">€0.00</div>
+                    <div class="stat-change" id="cashPercent">-</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">In Aktien investiert</div>
+                    <div class="stat-value" id="investedValue">€0.00</div>
+                    <div class="stat-change" id="investedPercent">-</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Gewinn/Verlust</div>
+                    <div class="stat-value" id="profitLoss">€0.00</div>
+                    <div class="stat-change" id="returnPercent">-</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Portfolio-Entwicklung vs. MSCI World</div>
+                    <div class="chart-subtitle">Vergleich der Performance über Zeit</div>
+                </div>
+                <canvas id="portfolioChart"></canvas>
+            </div>
+
+            <div class="holdings-container">
+                <div class="holdings-title">Aktuelle Positionen</div>
+                <div class="holdings-grid" id="holdingsGrid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="terminal" class="terminal-container">
+        <div class="terminal-header">
+            <span class="terminal-title">🖥️ AI Output / System Log</span>
+            <button onclick="document.getElementById('terminal').style.display='none'"
+                style="background:none; border:none; color:#888; cursor:pointer; font-size:1.2rem;">&times;</button>
+        </div>
+        <div id="terminalOutput" class="terminal-content"></div>
+    </div>
+
+    <script>
+        let chart = null;
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        function formatPercent(value) {
+            const sign = value >= 0 ? '+' : '';
+            return `${sign}${value.toFixed(2)}%`;
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+        }
+
+        function clearError() {
+            document.getElementById('error-container').innerHTML = '';
+        }
+
+        async function loadData() {
+            clearError();
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+
+            try {
+                const ts = new Date().getTime(); // Cache busting
+
+                // Parallel fetching for speed
+                const [portfolioRes, tradeLogRes, benchmarkRes] = await Promise.all([
+                    fetch('data/portfolio.json?t=' + ts),
+                    fetch('data/trade_log.csv?t=' + ts),
+                    fetch('data/benchmark.json?t=' + ts).catch(() => ({ ok: false }))
+                ]);
+
+                if (!portfolioRes.ok) throw new Error('Fehler beim Laden der Portfolio-Daten');
+                const portfolio = await portfolioRes.json();
+
+                if (!tradeLogRes.ok) throw new Error('Fehler beim Laden der Handelshistorie');
+                const tradeLogText = await tradeLogRes.text();
+
+                let benchmarkData = null;
+                if (benchmarkRes.ok) {
+                    try {
+                        benchmarkData = await benchmarkRes.json();
+                    } catch (e) {
+                        console.log('Benchmark data parsing failed');
+                    }
+                }
+
+                updateStats(portfolio, benchmarkData, tradeLogText);
+                updateStats(portfolio, benchmarkData, tradeLogText);
+                updateChart(portfolio, benchmarkData);
+                updateHoldings(portfolio, tradeLogText);
+                updateSessionStatus(portfolio);
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError(error.message);
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function updateSessionStatus(portfolio) {
+            const session = portfolio.last_session;
+            const el = document.getElementById('session-status');
+            const content = document.getElementById('session-details');
+
+            if (session) {
+                el.style.display = 'block';
+                const actionColor = session.action === 'TRADED' ? 'var(--success)' : 'var(--warning)';
+
+                content.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">${session.date}</span>
+                        <span style="color:${actionColor}; font-weight:bold; font-size: 1.2rem;">${session.action}</span>
+                    </div>
+                    <div style="line-height: 1.5; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; border-left: 3px solid ${actionColor};">
+                        ${session.reason}
+                    </div>
+                    ${session.trades_count > 0 ? `<div style="margin-top:0.5rem; font-size:0.9rem;">Trades Executed: ${session.trades_count}</div>` : ''}
+                `;
+            } else {
+                el.style.display = 'none';
+            }
+        }
+
+        function updateStats(portfolio, benchmarkData, tradeLogText) {
+            let totalValue = portfolio.total_value || 0;
+            let cash = portfolio.cash || 0;
+            let profitLoss = portfolio.profit_loss || 0;
+            let returnPct = portfolio.return_pct || 0;
+            const holdings = portfolio.holdings || {};
+
+            // Calculate invested amount based on reported values
+            let investedAmount = totalValue - cash;
+
+            // FIX: If total_value reported is suspicious (equal to cash but having holdings), recalculate.
+            if (holdings && Object.keys(holdings).length > 0 && Math.abs(totalValue - cash) < 1) {
+                // console.warn("Recalculating total value due to backend mismatch...");
+                const prices = parseCurrentPrices(tradeLogText);
+                let calculatedInvested = 0;
+
+                Object.entries(holdings).forEach(([ticker, quantity]) => {
+                    const price = prices[ticker] || 0;
+                    calculatedInvested += quantity * price;
+                });
+
+                if (calculatedInvested > 0) {
+                    investedAmount = calculatedInvested;
+                    totalValue = cash + investedAmount;
+
+                    const initialCapital = 10000;
+                    profitLoss = totalValue - initialCapital;
+                    returnPct = (profitLoss / initialCapital) * 100;
+                }
+            }
+
+            // Total value
+            document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+            const totalChangeEl = document.getElementById('totalChange');
+            totalChangeEl.textContent = formatPercent(returnPct);
+            totalChangeEl.className = `stat-change ${returnPct >= 0 ? 'positive' : 'negative'}`;
+
+            // Cash
+            document.getElementById('cashValue').textContent = formatCurrency(cash);
+            const cashPct = totalValue > 0 ? (cash / totalValue * 100) : 0;
+            document.getElementById('cashPercent').textContent = `${cashPct.toFixed(1)}% des Portfolios`;
+
+            // Invested
+            document.getElementById('investedValue').textContent = formatCurrency(investedAmount);
+            const investedPct = totalValue > 0 ? (investedAmount / totalValue * 100) : 0;
+            document.getElementById('investedPercent').textContent = `${investedPct.toFixed(1)}% des Portfolios`;
+
+            // Profit/Loss
+            const profitLossEl = document.getElementById('profitLoss');
+            profitLossEl.textContent = formatCurrency(profitLoss);
+            profitLossEl.className = `stat-value ${profitLoss >= 0 ? '' : ''}`;
+            profitLossEl.style.color = profitLoss >= 0 ? 'var(--success)' : 'var(--danger)';
+
+            const returnPercentEl = document.getElementById('returnPercent');
+            returnPercentEl.textContent = formatPercent(returnPct);
+            returnPercentEl.className = `stat-change ${returnPct >= 0 ? 'positive' : 'negative'}`;
+        }
+
+        function updateChart(portfolio, benchmarkData) {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+
+            let labels = [];
+            let portfolioData = [];
+            let benchmarkChartData = [];
+            const initialInvestment = 10000;
+
+            if (benchmarkData && benchmarkData.history && benchmarkData.history.length > 0) {
+                // Add Start Point
+                labels.push('Start');
+                portfolioData.push(initialInvestment);
+                benchmarkChartData.push(initialInvestment);
+
+                benchmarkData.history.forEach((entry) => {
+                    // FIX: Filter out invalid 0 values from history
+                    if (entry.portfolio_value <= 100) return;
+
+                    const date = new Date(entry.date);
+                    labels.push(date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
+
+                    portfolioData.push(entry.portfolio_value);
+                    benchmarkChartData.push(entry.benchmark_value);
+                });
+            } else {
+                // Fallback
+                labels = ['Start', 'Aktuell'];
+                const currentTotal = (portfolio.total_value > 100) ? portfolio.total_value : initialInvestment;
+                portfolioData = [initialInvestment, currentTotal];
+                benchmarkChartData = [initialInvestment, initialInvestment];
+            }
+
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Portfolio-Wert',
+                            data: portfolioData,
+                            borderColor: 'hsl(220, 90%, 56%)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: 'hsl(220, 90%, 56%)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'MSCI World (Benchmark)',
+                            data: benchmarkChartData,
+                            borderColor: 'hsl(280, 90%, 60%)',
+                            backgroundColor: 'rgba(192, 132, 252, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: 'hsl(280, 90%, 60%)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: 'hsl(0, 0%, 70%)', usePointStyle: true, pointStyle: 'circle' }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'hsl(0, 0%, 95%)',
+                            bodyColor: 'hsl(0, 0%, 85%)',
+                            borderColor: 'hsl(220, 18%, 22%)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    label += formatCurrency(context.parsed.y);
+
+                                    const dataIndex = context.dataIndex;
+                                    if (dataIndex > 0) {
+                                        const startValue = context.dataset.data[0];
+                                        const currentValue = context.parsed.y;
+                                        if (startValue && startValue > 0) {
+                                            const returnPct = ((currentValue - startValue) / startValue * 100);
+                                            label += ' (' + (returnPct >= 0 ? '+' : '') + returnPct.toFixed(2) + '%)';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: 'hsl(220, 18%, 18%)', drawBorder: false },
+                            ticks: { color: 'hsl(0, 0%, 70%)', callback: (val) => formatCurrency(val) }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: 'hsl(0, 0%, 70%)', maxRotation: 45, minRotation: 0 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateHoldings(portfolio, tradeLogText) {
+            const holdingsGrid = document.getElementById('holdingsGrid');
+            const holdings = portfolio.holdings || {};
+
+            if (Object.keys(holdings).length === 0) {
+                holdingsGrid.innerHTML = '<div class="empty-state">Keine Aktien im Portfolio</div>';
+                return;
+            }
+
+            // 1. Get Current Prices
+            const currentPrices = parseCurrentPrices(tradeLogText);
+
+            // 2. Calculate Average Buy Prices
+            const avgBuyPrices = calculateAvgBuyPrices(tradeLogText);
+
+            // Calculate total invested for allocation %
+            let totalInvestedCurrentVal = 0;
+            Object.entries(holdings).forEach(([ticker, quantity]) => {
+                const price = currentPrices[ticker] || 0;
+                totalInvestedCurrentVal += quantity * price;
+            });
+
+            let holdingsHTML = '';
+            Object.entries(holdings).forEach(([ticker, quantity]) => {
+                const currentPrice = currentPrices[ticker] || 0;
+                const buyPrice = avgBuyPrices[ticker] || 0;
+
+                const currentValue = quantity * currentPrice;
+                const allocation = totalInvestedCurrentVal > 0 ? (currentValue / totalInvestedCurrentVal * 100) : 0;
+
+                // Calculate Performance
+                let performanceHtml = '<div style="color: var(--text-muted)">-</div>';
+                if (buyPrice > 0) {
+                    const diffPct = ((currentPrice - buyPrice) / buyPrice) * 100;
+                    const colorClass = diffPct >= 0 ? 'positive' : 'negative';
+                    const sign = diffPct >= 0 ? '+' : '';
+                    const color = diffPct >= 0 ? 'var(--success)' : 'var(--danger)';
+                    performanceHtml = `<div style="color: ${color}; font-weight: 600;">${sign}${diffPct.toFixed(2)}%</div>`;
+                }
+
+                holdingsHTML += `
+                    <div class="holding-item" style="grid-template-columns: 1fr auto auto auto auto;">
+                        <div>
+                            <div class="holding-ticker">${ticker}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Buy: ${formatCurrency(buyPrice)}</div>
+                        </div>
+                        <div class="holding-quantity">
+                            <div class="holding-label">Anzahl</div>
+                            <div>${quantity}</div>
+                        </div>
+                        <div class="holding-value">
+                            <div class="holding-label">Wert</div>
+                            <div>${formatCurrency(currentValue)}</div>
+                        </div>
+                         <div class="holding-value">
+                            <div class="holding-label">Perf.</div>
+                            ${performanceHtml}
+                        </div>
+                        <div class="holding-allocation">
+                            <div class="holding-label">Anteil</div>
+                            <div>${allocation.toFixed(1)}%</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            holdingsGrid.innerHTML = holdingsHTML;
+        }
+
+        // Helper to parse the last known price for each ticker from CSV logic
+        function parseCurrentPrices(csvText) {
+            const prices = {};
+            const lines = csvText.trim().split('\n');
+            // Skip header
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                const parts = line.split(',');
+                if (parts.length >= 5) {
+                    const ticker = parts[1];
+                    const price = parseFloat(parts[4]);
+                    if (ticker && !isNaN(price)) {
+                        prices[ticker] = price; // Latest price will overwrite previous
+                    }
+                }
+            }
+            return prices;
+        }
+
+        // Helper to calculate average weighted buy price from trade history
+        function calculateAvgBuyPrices(csvText) {
+            const buys = {}; // map ticker -> { totalCost: 0, totalQty: 0 }
+            const lines = csvText.trim().split('\n');
+
+            // Process chronologically (top to bottom usually, but let's assume standard append log)
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                const parts = line.split(',');
+                if (parts.length < 6) continue;
+
+                const ticker = parts[1];
+                const action = parts[2]; // BUY or SELL
+                const quantity = parseFloat(parts[3]);
+                const price = parseFloat(parts[4]);
+
+                if (!buys[ticker]) buys[ticker] = { totalCost: 0, totalQty: 0 };
+
+                if (action === 'BUY') {
+                    buys[ticker].totalCost += (price * quantity);
+                    buys[ticker].totalQty += quantity;
+                } else if (action === 'SELL') {
+                    // Reduce quantity, keep average cost same logic or FIFO? 
+                    // Simple average logic: selling doesn't change the average buy price of remaining shares
+                    // but we need to track remaining qty correctly.
+                    buys[ticker].totalQty -= quantity;
+                    if (buys[ticker].totalQty <= 0) {
+                        // Position closed
+                        buys[ticker].totalCost = 0;
+                        buys[ticker].totalQty = 0;
+                    } else {
+                        // Proportional cost reduction
+                        const avgPrice = buys[ticker].totalCost / (buys[ticker].totalQty + quantity);
+                        buys[ticker].totalCost -= (avgPrice * quantity);
+                    }
+                }
+            }
+
+            const avgPrices = {};
+            Object.keys(buys).forEach(ticker => {
+                const data = buys[ticker];
+                if (data.totalQty > 0) {
+                    avgPrices[ticker] = data.totalCost / data.totalQty;
+                }
+            });
+            return avgPrices;
+        }
+
+
+        async function runTradingSession() {
+            const btn = document.getElementById('aiBtn');
+            const term = document.getElementById('terminal');
+            const out = document.getElementById('terminalOutput');
+
+            // if (!confirm('Soll eine neue Trading-Session gestartet werden? Dies wird einige Sekunden dauern.')) return;
+
+            btn.disabled = true;
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span>⏳</span><span>AI arbeitet...</span>';
+
+            term.style.display = 'block';
+            out.innerHTML = '<span style="color: #888;">> Initializing AI System...\n> Please wait, analyzing market data...</span>';
+
+            try {
+                const response = await fetch('/api/run_trading', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    out.innerHTML = '<span style="color: var(--success); font-weight:bold;">[SUCCESS] Session Completed.</span>\n\n' + data.output;
+                    // Auto scroll to bottom
+                    out.scrollTop = out.scrollHeight;
+
+                    // Refresh Dashboard Data
+                    loadData();
+                } else {
+                    out.innerHTML = '<span style="color: var(--danger); font-weight:bold;">[ERROR] Execution Failed.</span>\n\n' + (data.error || data.output);
+                }
+            } catch (e) {
+                out.innerHTML = '<span style="color: var(--danger);">[NETWORK ERROR] Could not contact server. Is run_dashboard.py running?</span>\n> ' + e;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        }
+
+        // Load data on page load
+        loadData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+
+</html>
