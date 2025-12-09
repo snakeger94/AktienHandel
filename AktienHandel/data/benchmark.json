@@ -115,6 +115,14 @@
             "benchmark_value": 10000.0,
             "benchmark_return": 0.0,
             "alpha": -2.4063249969482423
+        },
+        {
+            "date": "2025-12-06 12:36:11",
+            "portfolio_value": 9759.367500305176,
+            "portfolio_return": -2.4063249969482423,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.4063249969482423
         }
     ]
 }
