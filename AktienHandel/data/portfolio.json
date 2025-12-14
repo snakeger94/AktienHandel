@@ -1,5 +1,5 @@
 {
-    "cash": 3346.3124389648438,
+    "cash": 2788.3124198913574,
     "holdings": {
         "AAPL": 1,
         "GOOGL": 1,
@@ -15,40 +15,15 @@
         "WBD": 18,
         "MDB": 1,
         "AMAT": 1,
-        "ALGN": 3,
-        "AVGO": 1
+        "ALGN": 1,
+        "AVGO": 1,
+        "RIVN": 26,
+        "LULU": 2
     },
-    "total_value": 9748.122367858887,
-    "profit_loss": -251.87763214111328,
-    "return_pct": -2.5187763214111327,
+    "total_value": 9772.842456817627,
+    "profit_loss": -227.15754318237305,
+    "return_pct": -2.2715754318237305,
     "recent_trades": [
-        {
-            "Date": "2025-12-06 14:10:40",
-            "Ticker": "WBD",
-            "Action": "BUY",
-            "Quantity": "18",
-            "Price": "26.079999923706055",
-            "Total": "469.439998626709",
-            "Reason": "WBD\u2019s strong 1-year return and positive news surrounding the Warner Bros. Discovery merger suggest potential upside relative to the MSCI World index."
-        },
-        {
-            "Date": "2025-12-06 14:11:03",
-            "Ticker": "MDB",
-            "Action": "BUY",
-            "Quantity": "1",
-            "Price": "409.6199951171875",
-            "Total": "409.6199951171875",
-            "Reason": "MDB\u2019s current price significantly above its 200-day moving average, combined with a 19.3% 1-year return, suggests continued upward momentum and potential outperformance."
-        },
-        {
-            "Date": "2025-12-09 16:05:12",
-            "Ticker": "AMAT",
-            "Action": "BUY",
-            "Quantity": "1",
-            "Price": "267.4200134277344",
-            "Total": "267.4200134277344",
-            "Reason": "The recent price target increase and overall positive sentiment, combined with a strong 1-year return, suggest AMAT is poised to outperform the MSCI World index."
-        },
         {
             "Date": "2025-12-09 16:05:39",
             "Ticker": "ALGN",
@@ -66,20 +41,67 @@
             "Price": "399.2650146484375",
             "Total": "399.2650146484375",
             "Reason": "AVGO\u2019s price is above both key moving averages, coupled with positive market sentiment and a strong 1-year return, suggests continued upward momentum towards outperforming the MSCI World index."
+        },
+        {
+            "Date": "2025-12-14 14:37:04",
+            "Ticker": "RIVN",
+            "Action": "BUY",
+            "Quantity": "26",
+            "Price": "18.420000076293945",
+            "Total": "478.9200019836426",
+            "Reason": "The recent positive news regarding AI ambitions and the stock\u2019s strong performance relative to its moving averages suggest a continued upward trajectory, aligning with the goal of outperforming the MSCI World index."
+        },
+        {
+            "Date": "2025-12-14 14:37:17",
+            "Ticker": "ALGN",
+            "Action": "SELL",
+            "Quantity": "2",
+            "Price": "165.42999267578125",
+            "Total": "330.8599853515625",
+            "Reason": "The stock is underperforming, coupled with negative sentiment and a significant 1-year loss, suggesting a potential further decline."
+        },
+        {
+            "Date": "2025-12-14 14:37:40",
+            "Ticker": "LULU",
+            "Action": "BUY",
+            "Quantity": "2",
+            "Price": "204.97000122070312",
+            "Total": "409.94000244140625",
+            "Reason": "The recent positive outlook and leadership reshuffle, combined with the stock\u2019s relative strength against the 200-day moving average, suggest a strong bullish trend."
         }
     ],
     "last_trade": {
-        "ticker": "AVGO",
+        "ticker": "LULU",
         "action": "BUY",
-        "quantity": 1,
-        "price": 399.2650146484375,
-        "timestamp": "2025-12-09 16:07:09"
+        "quantity": 2,
+        "price": 204.97000122070312,
+        "timestamp": "2025-12-14 14:37:40"
     },
-    "trade_count": 11,
+    "trade_count": 14,
     "last_session": {
-        "date": "2025-12-09 16:07:11",
+        "date": "2025-12-14 14:37:42",
         "action": "TRADED",
         "reason": "Executed 3 trades.",
         "trades_count": 3
+    },
+    "current_prices": {
+        "AAPL": 278.2799987792969,
+        "GOOGL": 309.2900085449219,
+        "AMZN": 226.19000244140625,
+        "TSLA": 458.9599914550781,
+        "INTC": 37.810001373291016,
+        "AZN": 89.83000183105469,
+        "CVX": 149.99000549316406,
+        "CSGP": 68.2300033569336,
+        "DLTR": 129.8699951171875,
+        "CSCO": 77.80000305175781,
+        "ADI": 279.32000732421875,
+        "WBD": 29.979999542236328,
+        "MDB": 419.0,
+        "AMAT": 259.2099914550781,
+        "ALGN": 165.42999267578125,
+        "AVGO": 359.92999267578125,
+        "RIVN": 18.420000076293945,
+        "LULU": 204.97000122070312
     }
 }

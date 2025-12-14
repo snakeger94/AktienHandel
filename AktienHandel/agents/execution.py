@@ -52,6 +52,7 @@ class ExecutionAgent(BaseAgent):
                         close_val = close_val.iloc[0]
                     current_price = float(close_val)
                     total_value += current_price * quantity
+                    state.setdefault('current_prices', {})[ticker] = current_price
             
             state['total_value'] = total_value
             
@@ -147,6 +148,7 @@ class ExecutionAgent(BaseAgent):
                         close_val = close_val.iloc[0]
                     current_price = float(close_val)
                     total_value += current_price * qty
+                    state.setdefault('current_prices', {})[ticker_symbol] = current_price
             except Exception as e:
                 self.log(f"Warning: Could not fetch price for {ticker_symbol}: {e}")
                 # Fallback: use the trade price if it's the ticker we just traded

@@ -576,7 +576,8 @@
             // FIX: If total_value reported is suspicious (equal to cash but having holdings), recalculate.
             if (holdings && Object.keys(holdings).length > 0 && Math.abs(totalValue - cash) < 1) {
                 // console.warn("Recalculating total value due to backend mismatch...");
-                const prices = parseCurrentPrices(tradeLogText);
+                let prices = portfolio.current_prices || {};
+                if (Object.keys(prices).length === 0) prices = parseCurrentPrices(tradeLogText);
                 let calculatedInvested = 0;
 
                 Object.entries(holdings).forEach(([ticker, quantity]) => {
@@ -755,7 +756,11 @@
             }
 
             // 1. Get Current Prices
-            const currentPrices = parseCurrentPrices(tradeLogText);
+            let currentPrices = portfolio.current_prices || {};
+            // Fallback if empty (though backend should provide it now)
+            if (Object.keys(currentPrices).length === 0) {
+                currentPrices = parseCurrentPrices(tradeLogText);
+            }
 
             // 2. Calculate Average Buy Prices
             const avgBuyPrices = calculateAvgBuyPrices(tradeLogText);

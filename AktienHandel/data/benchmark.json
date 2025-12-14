@@ -139,6 +139,30 @@
             "benchmark_value": 9980.70529495023,
             "benchmark_return": -0.19294705049769348,
             "alpha": -2.3235919128201776
+        },
+        {
+            "date": "2025-12-11 19:15:51",
+            "portfolio_value": 9851.41488647461,
+            "portfolio_return": -1.485851135253906,
+            "benchmark_value": 10057.347628627347,
+            "benchmark_return": 0.5734762862734608,
+            "alpha": -2.059327421527367
+        },
+        {
+            "date": "2025-12-12 16:30:40",
+            "portfolio_value": 9774.531387329102,
+            "portfolio_return": -2.2546861267089846,
+            "benchmark_value": 10000.0,
+            "benchmark_return": 0.0,
+            "alpha": -2.2546861267089846
+        },
+        {
+            "date": "2025-12-14 14:37:52",
+            "portfolio_value": 9772.842456817627,
+            "portfolio_return": -2.2715754318237305,
+            "benchmark_value": 9973.737512683287,
+            "benchmark_return": -0.26262487316714406,
+            "alpha": -2.0089505586565863
         }
     ]
 }
